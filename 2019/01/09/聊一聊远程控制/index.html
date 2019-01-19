@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+<link href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":true},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="服务器长什么样？就是放在机柜里一层一层的像VCD还不给人碰的玩意，它没接显示器，还被锁起来，那怎么玩它？你一定会说，远程啊。完全正确，但是，该怎么远程？">
+<meta name="keywords" content="Windows,GitHub,SSH,HTTPS,Linux,MSTSC,RDP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊一聊远程控制">
+<meta property="og:url" content="http://yoursite.com/2019/01/09/聊一聊远程控制/index.html">
+<meta property="og:site_name" content="Lenki">
+<meta property="og:description" content="服务器长什么样？就是放在机柜里一层一层的像VCD还不给人碰的玩意，它没接显示器，还被锁起来，那怎么玩它？你一定会说，远程啊。完全正确，但是，该怎么远程？">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-19T01:36:56.922Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊一聊远程控制">
+<meta name="twitter:description" content="服务器长什么样？就是放在机柜里一层一层的像VCD还不给人碰的玩意，它没接显示器，还被锁起来，那怎么玩它？你一定会说，远程啊。完全正确，但是，该怎么远程？">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/09/聊一聊远程控制/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>聊一聊远程控制 | Lenki</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Lenki</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-主页">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>主页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-分类">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-归档">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-关于">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/09/聊一聊远程控制/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lenki">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/dashu.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lenki">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊一聊远程控制
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-09 17:48:00" itemprop="dateCreated datePublished" datetime="2019-01-09T17:48:00+08:00">2019-01-09</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/玩玩博客/" itemprop="url" rel="index"><span itemprop="name">玩玩博客</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>服务器长什么样？就是放在机柜里一层一层的像VCD还不给人碰的玩意，它没接显示器，还被锁起来，那怎么玩它？你一定会说，远程啊。完全正确，但是，该怎么远程？<a id="more"></a></p>
+<h2 id="有哪些远程方式"><a href="#有哪些远程方式" class="headerlink" title="有哪些远程方式"></a>有哪些远程方式</h2><p>按照来源不同，大致分为第三方软件远程，和系统自带软件远程。</p>
+<h3 id="QQ"><a href="#QQ" class="headerlink" title="QQ"></a>QQ</h3><p>可能它是很多人唯一知道的远程软件，聊天窗点个按钮就能控制对方电脑，很方便。但大兄弟，能不用就不用吧，别问为什么。</p>
+<h3 id="TeamViewer"><a href="#TeamViewer" class="headerlink" title="TeamViewer"></a>TeamViewer</h3><p>这是一个专业的远程软件，使用简单，缺点是收费，而且被控制的电脑的屏幕会“直播”，你晚上在公司加班，突然发现隔壁的电脑自己在动，位子上却没有人，见鬼了。</p>
+<h3 id="MSTSC"><a href="#MSTSC" class="headerlink" title="MSTSC"></a>MSTSC</h3><p>上面两个都是第三方软件，都免不了下载安装，服务器都讲究性能，额外的安装也意味着额外的性能消耗，所以还是系统自带的比较好。</p>
+<p>在<code>Win + r</code>中输入<code>mstsc</code>打开远程桌面连接，输入主机、用户名、密码。一旦连接上，被控制的电脑会锁屏，不存在“直播”，能够防止信息泄露。</p>
+<p>Windows系统建议用此方式远程。</p>
+<h3 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h3><p>连一下个人电脑，或者Windows服务器可以用MSTSC，但是绝大部分服务器都是Linux系统，MSTSC就不好使了，那什么好使？SSH。</p>
+<p>我们搭建的博客，无论是使用自己的Linux服务器，还是使用GitHub平台，都会用到SSH。不着急，我们慢慢讲，一个一个来。</p>
+<h2 id="Windows连接大法"><a href="#Windows连接大法" class="headerlink" title="Windows连接大法"></a>Windows连接大法</h2><p>MSTSC基于RDP协议，默认端口3389。</p>
+<h3 id="什么是端口"><a href="#什么是端口" class="headerlink" title="什么是端口"></a>什么是端口</h3><p>你在电脑上一边浏览网页，一边用微信聊天，网络把数据传过来，电脑是怎么知道哪些数据是给哪个程序的？网页就一定是浏览器的？聊天消息就一定是微信的？那你再开个QQ呢？</p>
+<p>电脑就像一栋房子的管理员，每一个要通信的程序都有一间房，管理员不在乎里面住的是谁，它只在乎这间房的房号是多少。每时每刻都有房客写信出去，管理员会帮它填上寄信人“xx号房客”，等收到回信时，管理员就知道该交给谁了。这种管理方式有很多好处</p>
+<ul>
+<li>效率提高了。寄信时不登记房客信息，收到回信时就不用核实房客身份，“你是叫微信么，没冒充吧？”</li>
+<li>资源节省了。每一个房客只在要寄信时才住到房子里（程序开启时），它交流完就回地下室睡觉去，房间也就空出来了</li>
+</ul>
+<p>一共有65536个房间，房号从0到65535，这个房号就是<strong>端口</strong>，房间里有人就叫<strong>占用</strong>。每个房客，为了保证自己的房间不被抢，都会指定一个固定的房号，这就是<strong>默认端口</strong>，当然管理员也可以让它搬到别的房间去，但总归嫌麻烦。有些房号，因为指定住它里面的房客太有名气，所以一说起号码，大家都知道里面是谁。</p>
+<h3 id="什么是协议"><a href="#什么是协议" class="headerlink" title="什么是协议"></a>什么是协议</h3><p>协议只是一种正式的说法，通俗一点就是约定。就像抗战时期的暗号，两个人见面前约定好，见面之后先说什么后说什么，我说什么可以表示我的身份，为了防止别人偷听，我说大的意思是小，我说强的意思是弱，那你如果不知道这个约定，你就不知道我在讲什么。所以，协议并不是要多厉害才能玩，协议内容随便定义，我喊上课你喊起立，这也是一种协议，学校定义出来的老师和学生之间的协议。如果你在不知道协议内容的情况下，听懂了对方话的意思，就叫做破解了协议，黑客干的就是这些事。</p>
+<h3 id="什么是RDP"><a href="#什么是RDP" class="headerlink" title="什么是RDP"></a>什么是RDP</h3><p>RDP，Remote Desktop Protocol，远程桌面协议，专门用于Windows系统的远程连接。如果两台电脑都有遵循此协议的软件，它们就可以用这个软件互相远程连接，MSTSC就是微软官方提供的这种软件。</p>
+<p>MSTSC，Microsoft Terminal Services Client，微软终端服务客户端，是遵循RDP协议的连接工具。现在看“MSTSC基于RDP协议，默认端口3389”这句话，有没有舒服了一点。</p>
+<h3 id="权限设置"><a href="#权限设置" class="headerlink" title="权限设置"></a>权限设置</h3><p>连接之前，需要允许自己的电脑被远程控制，操作步骤参考 <a href="https://jingyan.baidu.com/article/63f23628177e6d0209ab3d60.html" target="_blank" rel="noopener">Win7系统怎么开启远程桌面？Win7远程桌面怎么用</a>。远程协助和远程桌面是不同的功能，参考 <a href="https://blog.csdn.net/heimao0307/article/details/80051717" target="_blank" rel="noopener">Windows的远程协助和远程桌面的区别</a>，我们只用配置远程桌面。</p>
+<p>在<code>远程设置</code>-<code>选择用户</code>-<code>添加</code>的时候，发现自己的用户搜索不到，解决办法是</p>
+<ol>
+<li>右键<code>计算机</code>，选择<code>管理</code></li>
+<li>选择<code>系统工具</code>-<code>本地用户和组</code>-<code>用户</code></li>
+<li>出现一个列表，表头是<code>名称</code>和<code>全名</code></li>
+<li>发现自己的用户名是<code>全名</code>，而<code>选择用户</code>那里取的是<code>名称</code></li>
+<li>将<code>名称</code>改成和<code>全名</code>一致</li>
+<li>注销或重启</li>
+</ol>
+<h2 id="Linux连接大法"><a href="#Linux连接大法" class="headerlink" title="Linux连接大法"></a>Linux连接大法</h2><p>本章重难点。</p>
+<h3 id="什么是SSH"><a href="#什么是SSH" class="headerlink" title="什么是SSH"></a>什么是SSH</h3><p>SSH，Secure Shell，安全外壳协议，是一种加密的网络传输协议，任何网络服务都可以通过SSH实现安全传输，但最常见的用途是远程登录系统，默认端口22。参考维基百科 <a href="https://zh.wikipedia.org/wiki/Secure_Shell" target="_blank" rel="noopener">Secure Shell</a>。</p>
+<p>注意名字，它不像RDP叫远程桌面，它叫安全外壳，也就是说它强调的是安全，正因为这个特点，它有更广泛的应用，而不仅仅当作远程登录。例如，我们部署博客到GitHub，在配置文件<code>_config.yml</code>中填写</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line"><span class="attr">  type:</span> <span class="string">git</span></span><br><span class="line">  <span class="comment"># 按SSH协议的格式，写出的地址，表示使用SSH协议，把我们生成的博客页面，传输过去</span></span><br><span class="line"><span class="attr">  repo:</span> <span class="string">git@github.com:xiaomin/xiaomin.github.io.git</span></span><br><span class="line"><span class="attr">  branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<p>也可以改成</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line"><span class="attr">  type:</span> <span class="string">git</span></span><br><span class="line">  <span class="comment"># 按HTTPS协议的格式，写出的地址，表示使用HTTPS协议，把我们生成的博客页面，传输过去</span></span><br><span class="line"><span class="attr">  repo:</span> <span class="attr">https://github.com/xiaomin/xiaomin.github.io.git</span></span><br><span class="line"><span class="attr">  branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<p>这两个地址指向的是同一个地方，只不过使用的传输协议不同，但最终都能达到部署的目的。如果听起来有点绕，可以这么理解，你想让助理帮你寄一个包裹，于是你填了一个单，用前一种写法，表示你想让助理寄顺丰，用第二种写法，表示你想让助理寄平邮。包裹总能寄到，但寄顺丰更方便。</p>
+<p>HTTPS也是一种加密的网络传输协议，我们下次再讲。部署博客，SSH比HTTPS好用，因为不用输入用户和密码，那SSH是如何做到这一点的？</p>
+<h3 id="SSH验证方式"><a href="#SSH验证方式" class="headerlink" title="SSH验证方式"></a>SSH验证方式</h3><p>SSH有两种验证方式</p>
+<ol>
+<li>用户和密码，登录时所有信息会被加密，但可能会有别的服务器在冒充真正的服务器，无法避免被“中间人”攻击</li>
+<li>公钥和私钥，用户为自己创建一对密钥，然后将公钥放在服务器，私钥保存在自己的电脑，连接时无需用户和密码，而且可以避免被“中间人”攻击，因为冒充的服务器没有自己保存的私钥</li>
+</ol>
+<p>这种公钥和私钥的加密方式，叫做非对称加密。</p>
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>非对称加密，也称为公开密钥加密，是密码学的一种算法，它需要两个密钥，一个是公开密钥，另一个是私有密钥；一个用作加密，另一个则用作解密。使用其中一个密钥把明文加密后所得的密文，只能用相对应的另一个密钥才能解密得到原本的明文，甚至连最初用来加密的密钥也不能用作解密。由于加密和解密需要两个不同的密钥，故被称为非对称加密。不同于加密和解密都使用同一个密钥的对称加密，虽然两个密钥在数学上相关，但如果知道了其中一个，并不能凭此计算出另外一个。因此其中一个可以公开，称为公钥，任意向外发布；不公开的密钥为私钥，必须由用户自行严格秘密保管，绝不透过任何途径向任何人提供，也不会透露给被信任的要通信的另一方。</p>
+<p>这段话取自维基百科 <a href="https://zh.wikipedia.org/wiki/%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">公开密钥加密</a>，解释得很清楚，就是有点长，稍微概括一下</p>
+<ul>
+<li>公钥用来加密，私钥用来解密</li>
+<li>公钥和私钥是一对，用公钥加密的信息，它自己都无法解密，只有与它对应的私钥才能解密</li>
+<li>公钥可以随便给其他人，不怕泄露，私钥只能自己保管</li>
+<li>信息传输过程中，只有公钥会经过网络，私钥始终在自己电脑，这样传输过程中私钥不会被窃取</li>
+</ul>
+<h3 id="生成SSH密钥对"><a href="#生成SSH密钥对" class="headerlink" title="生成SSH密钥对"></a>生成SSH密钥对</h3><p>打开命令行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -t 密钥类型</span></span><br><span class="line"><span class="comment"># -C 备注</span></span><br><span class="line">$ ssh-keygen -t rsa -C <span class="string">"xiaomin@qq.com"</span></span><br></pre></td></tr></table></figure>
+<p>确认之后系统会提示输入存储位置，和passphrase（口令），直接回车无需理会，参考 <a href="https://www.cnblogs.com/djh-create/p/6896426.html" target="_blank" rel="noopener">ssh-keygen基本用法</a>。生成之后，打开<code>个人文件夹</code>，也就是在<code>开始</code>菜单中点击自己的用户名，或者打开<code>C:\Users\xiaomin</code>，然后找到<code>.ssh</code>并进入，可以看到三个文件</p>
+<ul>
+<li><code>id_rsa</code>，私钥</li>
+<li><code>id_rsa.pub</code>，公钥</li>
+<li><code>known_hosts</code>，已知主机，所有使用SSH连接过的主机的信息</li>
+</ul>
+<p>用记事本打开<code>id_rsa.pub</code>，复制里面所有内容，谁给你粘贴，你就能控制谁。</p>
+<h3 id="粘贴到GitHub"><a href="#粘贴到GitHub" class="headerlink" title="粘贴到GitHub"></a>粘贴到GitHub</h3><p>直接在网页上操作，非常简单，参考 <a href="https://blog.csdn.net/qq_32842925/article/details/80273534" target="_blank" rel="noopener">git详细教程–光速学会安装、提交托管与sshkey创建</a>，写得很详细，而且有截图，往后翻翻。</p>
+<p>测试是否配置成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意，这个不是自己的邮箱，不用改</span></span><br><span class="line">$ ssh git@github.com</span><br></pre></td></tr></table></figure>
+<p>能看到自己GitHub的用户名，表示成功。</p>
+<h3 id="粘贴到服务器"><a href="#粘贴到服务器" class="headerlink" title="粘贴到服务器"></a>粘贴到服务器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入Home</span></span><br><span class="line">$ <span class="built_in">cd</span> ~</span><br><span class="line"><span class="comment"># 新建.ssh目录</span></span><br><span class="line">$ mkdir .ssh</span><br><span class="line">$ <span class="built_in">cd</span> .ssh</span><br><span class="line">$ vim authorized_keys</span><br></pre></td></tr></table></figure>
+<p><code>authorized_keys</code>就是用来记录公钥的文件，每一行代表一个公钥，所以如果<code>~/.ssh/authorized_keys</code>已存在就无需创建，直接空一行，粘贴自己的就行。测试是否配置成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意，这个不是自己的邮箱，是用户@服务器地址，需要改</span></span><br><span class="line">$ ssh git@xiaomin.com</span><br></pre></td></tr></table></figure>
+<p>登录成功，并且无需密码，表示成功。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Windows/" rel="tag"><i class="fa fa-tag"></i> Windows</a>
+          
+            <a href="/tags/GitHub/" rel="tag"><i class="fa fa-tag"></i> GitHub</a>
+          
+            <a href="/tags/SSH/" rel="tag"><i class="fa fa-tag"></i> SSH</a>
+          
+            <a href="/tags/HTTPS/" rel="tag"><i class="fa fa-tag"></i> HTTPS</a>
+          
+            <a href="/tags/Linux/" rel="tag"><i class="fa fa-tag"></i> Linux</a>
+          
+            <a href="/tags/MSTSC/" rel="tag"><i class="fa fa-tag"></i> MSTSC</a>
+          
+            <a href="/tags/RDP/" rel="tag"><i class="fa fa-tag"></i> RDP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/05/博客的人民币玩法/" rel="next" title="博客的人民币玩法">
+                <i class="fa fa-chevron-left"></i> 博客的人民币玩法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/17/一个重大的决定/" rel="prev" title="一个重大的决定">
+                一个重大的决定 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/dashu.jpg" alt="Lenki">
+            
+              <p class="site-author-name" itemprop="name">Lenki</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:lenkipan@hotmail.com" title="E-Mail &rarr; mailto:lenkipan@hotmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lenkipan" title="GitHub &rarr; https://github.com/lenkipan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#有哪些远程方式"><span class="nav-number">1.</span> <span class="nav-text">有哪些远程方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#QQ"><span class="nav-number">1.1.</span> <span class="nav-text">QQ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TeamViewer"><span class="nav-number">1.2.</span> <span class="nav-text">TeamViewer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSTSC"><span class="nav-number">1.3.</span> <span class="nav-text">MSTSC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH"><span class="nav-number">1.4.</span> <span class="nav-text">SSH</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows连接大法"><span class="nav-number">2.</span> <span class="nav-text">Windows连接大法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是端口"><span class="nav-number">2.1.</span> <span class="nav-text">什么是端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是协议"><span class="nav-number">2.2.</span> <span class="nav-text">什么是协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是RDP"><span class="nav-number">2.3.</span> <span class="nav-text">什么是RDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权限设置"><span class="nav-number">2.4.</span> <span class="nav-text">权限设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux连接大法"><span class="nav-number">3.</span> <span class="nav-text">Linux连接大法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是SSH"><span class="nav-number">3.1.</span> <span class="nav-text">什么是SSH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH验证方式"><span class="nav-number">3.2.</span> <span class="nav-text">SSH验证方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非对称加密"><span class="nav-number">3.3.</span> <span class="nav-text">非对称加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成SSH密钥对"><span class="nav-number">3.4.</span> <span class="nav-text">生成SSH密钥对</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#粘贴到GitHub"><span class="nav-number">3.5.</span> <span class="nav-text">粘贴到GitHub</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#粘贴到服务器"><span class="nav-number">3.6.</span> <span class="nav-text">粘贴到服务器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lenki</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
